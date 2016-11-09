@@ -3,7 +3,7 @@
 This example uses docopt with the built in cmd module to demonstrate an
 interactive command application.
 Usage:
-    kanban todo <name>
+    kanban todo (<name>)
     kanban doing <task_id>
     kanban done <task_id>
     kanban list <command>
@@ -53,7 +53,17 @@ def docopt_cmd(func):
 
 class MyInteractive(cmd.Cmd):
     intro = 'Welcome to KanBan! We organize your tasks!' \
-        + ' (type help for a list of commands.)'
+        + ' (Type help for a list of commands.\n ' \
+          '\t\tKANBAN APP\n\
+        Create A new Task\n\
+        Start Doing A Task\n\
+        Complete A Task\n\
+        View Added Task\n\
+        View Tasks You are Doing\n\
+        View Completed Task\n\
+        View All Tasks\n\
+        View All Tasks By Status\n'
+
     prompt = '(KanBan) '
     file = None
     kanban = KanBan()
