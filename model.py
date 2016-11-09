@@ -44,11 +44,11 @@ class KanBan(object):
 
     def done_task(self, tid):
         self.tid = tid
-        check = "SELECT id FROM task WHERE id = ?"
+        check = "SELECT id, status FROM task WHERE id = ?"
         self.cursor.execute(check, (self.tid,))
         data = self.cursor.fetchone()
         if data is None:
-            print('Sorry the task does not exits')
+            print('Sorry You have not Started doing that Task')
         else:
             done = 'done'
             doing_update = "UPDATE task SET status = ?, end_on = ? WHERE id = ?"
@@ -89,4 +89,21 @@ class KanBan(object):
         print(tabulate(done_list, headers=["Task Id", "Task Name", "Status", "Start Time", "Finish Time"],
                        numalign="center"))
 
+    def duration(self):
+        query_done = "SELECT id, title, status, start_on, end_on FROM task WHERE status = 'done'"
+        self.cursor.execute(query_done)
+        records = self.cursor.fetchall()
+        all_task = []
+        for row in records:
+            start = datetime.strptime(str(row[3]), '%Y-%m-%d %H:%M')
+            stop = datetime.strptime(str(row[4]), '%Y-%m-%d %H:%M')
+            start_time, stop_time = start.strftime('%H:%M').split(':'), stop.strftime('%H:%M').split(':')
+            hours = int(stop_time[0]) - int(start_time[0])
+            minutes = int(stop_time[1]) - int(start_time[1])
+            tasks_duration = [row[0], row[1], row[2], hours, minutes]
+            all_task.append(tasks_duration)
+            print(hours, minutes)
+
+        print(tabulate(all_task, headers=["Task Id", "Task Name", "Status", "Hours Taken", "Minutes Taken"],
+                       numalign="center"))
 
