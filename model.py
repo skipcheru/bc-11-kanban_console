@@ -9,7 +9,7 @@ class KanBan(object):
         self.cursor = self.conn.cursor()
         self.start = datetime.now().strftime("%Y-%m-%d %H:%M")
 
-        # Create database called tasks
+        # Create database called tasks if not created
 
     def create_table(self):
         table = 'CREATE TABLE IF NOT EXITS task(' \
@@ -31,7 +31,7 @@ class KanBan(object):
         task = self.cursor.fetchall()
         for row in task:
             task_list = [row[0], row[1], row[2], row[3], row[4]]
-        print(tabulate([task_list], headers=["Task Id", "Task Name", "Status", "Start Time", "Finish Time"],
+        print(tabulate([task_list], headers=["Task Id", "Task Name", "Status", "Section", "Finish Time"],
                            numalign="center"))
         self.conn.commit()
         print('\n')
@@ -53,7 +53,7 @@ class KanBan(object):
             task = self.cursor.fetchall()
             for row in task:
                 task_list = [row[0], row[1], row[2], row[3], row[4]]
-            print(tabulate([task_list], headers=["Task Id", "Task Name", "Status", "Start Time", "Finish Time"],
+            print(tabulate([task_list], headers=["Task Id", "Task Name", "Section", "Start Time", "Finish Time"],
                            numalign="center"))
             print('\n')
 
@@ -76,7 +76,7 @@ class KanBan(object):
             task = self.cursor.fetchall()
             for row in task:
                 task_list = [row[0], row[1], row[2], row[3], row[4]]
-            print(tabulate([task_list], headers=["Task Id", "Task Name", "Status", "Start Time", "Finish Time"],
+            print(tabulate([task_list], headers=["Task Id", "Task Name", "Section", "Start Time", "Finish Time"],
                            numalign="center"))
             self.conn.commit()
             print('\n')
@@ -86,7 +86,7 @@ class KanBan(object):
         self.cursor.execute(query_all)
         # check if there is any to do tasks
         if self.cursor.rowcount is None:
-            print("\nYour Todo List is Empty.\n")
+            print("\nYour Todo List is Empty. Create One if You Like\n")
 
         else:
             task_list = []
@@ -94,26 +94,32 @@ class KanBan(object):
                 one_task_list = [row[0], row[1], row[2], row[3], row[4]]
                 task_list.append(one_task_list)
 
-            print(tabulate(task_list, headers=["Task Id", "Task Name", "Status", "Start Time", "Finish Time"],
+            print(tabulate(task_list, headers=["Task Id", "Task Name", "Section", "Start Time", "Finish Time"],
                            numalign="center"))
             print('\n')
 
     def list_doing(self):
         query_doing = "SELECT * FROM task WHERE status = 'doing'"
         self.cursor.execute(query_doing)
+        records = self.cursor.fetchall()
 
-        # check if there is any task the user is doing
         if self.cursor.rowcount is None:
-            print("\nYou have not started doing anything yet.\n")
-
+            print("You have not finished any task yet.\n")
         else:
-            doing_list = []
-            print('\nThese Are The Tasks You Are Doing\n')
-            for row in self.cursor:
-                one_task_list = [row[0], row[1], row[2], row[3], row[4]]
-                doing_list.append(one_task_list)
+            done_list = []
+            print('\nThese Are The Tasks You Are Currently Doing and Duration Taken\n')
+            for row in records:
+                start = datetime.strptime(self.start, '%Y-%m-%d %H:%M')
+                print(start)
+                print(self.start)
+                stop = datetime.strptime(str(row[3]), '%Y-%m-%d %H:%M')
+                start_time, stop_time = start.strftime('%H:%M').split(':'), stop.strftime('%H:%M').split(':')
+                hours = int(stop_time[0]) - int(start_time[0])
+                minutes = int(stop_time[1]) - int(start_time[1])
+                tasks_duration = [row[0], row[1], row[2], hours, minutes]
+                done_list.append(tasks_duration)
 
-            print(tabulate(doing_list, headers=["Task Id", "Task Name", "Status", "Start Time", "Finish Time"],
+            print(tabulate(done_list, headers=["Task Id", "Task Name", "Section", "Hours Taken", "Minutes Taken"],
                            numalign="center"))
             print('\n')
 
@@ -151,7 +157,7 @@ class KanBan(object):
                 tasks_duration = [row[0], row[1], row[2], hours, minutes]
                 done_list.append(tasks_duration)
 
-            print(tabulate(done_list, headers=["Task Id", "Task Name", "Status", "Hours Taken", "Minutes Taken"],
+            print(tabulate(done_list, headers=["Task Id", "Task Name", "Section", "Hours Taken", "Minutes Taken"],
                            numalign="center"))
             print('\n')
 
