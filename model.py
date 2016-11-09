@@ -25,9 +25,16 @@ class KanBan(object):
         self.status = 'todo'
         insert_query = 'INSERT INTO task(title, status) VALUES(?, ?)'
         self.cursor.execute(insert_query, (self.title, self.status))
-        # self.cursor.execute("SELECT MAX(id),title,status,FROM tasks")
-        # task = self.cursor.fetchall()
+        # get the created task
+        print("\nTask added!\n")
+        self.cursor.execute("SELECT MAX(id), title, status, start_on, end_on FROM task")
+        task = self.cursor.fetchall()
+        for row in task:
+            task_list = [row[0], row[1], row[2], row[3], row[4]]
+        print(tabulate([task_list], headers=["Task Id", "Task Name", "Status", "Start Time", "Finish Time"],
+                           numalign="center"))
         self.conn.commit()
+        print('\n')
 
     def doing_task(self, tid):
         self.tid = tid
@@ -40,70 +47,111 @@ class KanBan(object):
             doing = 'doing'
             doing_update = "UPDATE task SET status = ?, start_on = ? WHERE id = ?"
             self.cursor.execute(doing_update, (doing, self.start, self.tid))
+            #
+            self.cursor.execute("SELECT * FROM task WHERE id = ?", (self.tid,))
+            print("\nGreat! You have started doing\n")
+            task = self.cursor.fetchall()
+            for row in task:
+                task_list = [row[0], row[1], row[2], row[3], row[4]]
+            print(tabulate([task_list], headers=["Task Id", "Task Name", "Status", "Start Time", "Finish Time"],
+                           numalign="center"))
+            print('\n')
+
             self.conn.commit()
 
     def done_task(self, tid):
         self.tid = tid
-        check = "SELECT id, status FROM task WHERE id = ?"
+        check = "SELECT id, status FROM task WHERE id = ? AND status = 'doing'"
         self.cursor.execute(check, (self.tid,))
         data = self.cursor.fetchone()
         if data is None:
-            print('Sorry You have not Started doing that Task')
+            print('\nSorry! You have not Started doing that Task')
         else:
             done = 'done'
             doing_update = "UPDATE task SET status = ?, end_on = ? WHERE id = ?"
             self.cursor.execute(doing_update, (done, self.start, self.tid))
+            #
+            self.cursor.execute("SELECT * FROM task WHERE id = ?", (self.tid,))
+            print("\nYou've successfully done the task\n")
+            task = self.cursor.fetchall()
+            for row in task:
+                task_list = [row[0], row[1], row[2], row[3], row[4]]
+            print(tabulate([task_list], headers=["Task Id", "Task Name", "Status", "Start Time", "Finish Time"],
+                           numalign="center"))
             self.conn.commit()
-            print("You've successfully done the task")
+            print('\n')
 
     def list_all(self):
         query_all = 'SELECT * FROM task'
         self.cursor.execute(query_all)
-        task_list = []
-        for row in self.cursor:
-            one_task_list = [row[0], row[1], row[2], row[3], row[4]]
-            task_list.append(one_task_list)
+        # check if there is any to do tasks
+        if self.cursor.rowcount is None:
+            print("\nYour Todo List is Empty.\n")
 
-        print(tabulate(task_list, headers=["Task Id", "Task Name", "Status", "Start Time", "Finish Time"],
-                       numalign="center"))
+        else:
+            task_list = []
+            for row in self.cursor:
+                one_task_list = [row[0], row[1], row[2], row[3], row[4]]
+                task_list.append(one_task_list)
+
+            print(tabulate(task_list, headers=["Task Id", "Task Name", "Status", "Start Time", "Finish Time"],
+                           numalign="center"))
+            print('\n')
 
     def list_doing(self):
-        query_todo = "SELECT * FROM task WHERE status = 'doing'"
-        self.cursor.execute(query_todo)
-        doing_list = []
-        for row in self.cursor:
-            one_task_list = [row[0], row[1], row[2], row[3], row[4]]
-            doing_list.append(one_task_list)
+        query_doing = "SELECT * FROM task WHERE status = 'doing'"
+        self.cursor.execute(query_doing)
 
-        print(tabulate(doing_list, headers=["Task Id", "Task Name", "Status", "Start Time", "Finish Time"],
-                       numalign="center"))
+        # check if there is any task the user is doing
+        if self.cursor.rowcount is None:
+            print("\nYou have not started doing anything yet.\n")
 
-    def list_done(self):
+        else:
+            doing_list = []
+            print('\nThese Are The Tasks You Are Doing\n')
+            for row in self.cursor:
+                one_task_list = [row[0], row[1], row[2], row[3], row[4]]
+                doing_list.append(one_task_list)
+
+            print(tabulate(doing_list, headers=["Task Id", "Task Name", "Status", "Start Time", "Finish Time"],
+                           numalign="center"))
+            print('\n')
+
+    def all_list_done(self):
         query_done = "SELECT * FROM task WHERE status = 'done'"
         self.cursor.execute(query_done)
-        done_list = []
-        for row in self.cursor:
-            one_task_list = [row[0], row[1], row[2], row[3], row[4]]
-            done_list.append(one_task_list)
+        if self.cursor.rowcount is None:
+            print("You have not finished any task yet.\n")
+        else:
+            done_list = []
+            print('\nThese Are The Tasks You Have Completed\n')
+            for row in self.cursor:
+                one_task_list = [row[0], row[1], row[2], row[3], row[4]]
+                done_list.append(one_task_list)
 
-        print(tabulate(done_list, headers=["Task Id", "Task Name", "Status", "Start Time", "Finish Time"],
-                       numalign="center"))
+            print(tabulate(done_list, headers=["Task Id", "Task Name", "Status", "Start Time", "Finish Time"],
+                           numalign="center"))
+            print('\n')
 
-    def duration(self):
+    def list_done(self):
         query_done = "SELECT id, title, status, start_on, end_on FROM task WHERE status = 'done'"
         self.cursor.execute(query_done)
         records = self.cursor.fetchall()
-        all_task = []
-        for row in records:
-            start = datetime.strptime(str(row[3]), '%Y-%m-%d %H:%M')
-            stop = datetime.strptime(str(row[4]), '%Y-%m-%d %H:%M')
-            start_time, stop_time = start.strftime('%H:%M').split(':'), stop.strftime('%H:%M').split(':')
-            hours = int(stop_time[0]) - int(start_time[0])
-            minutes = int(stop_time[1]) - int(start_time[1])
-            tasks_duration = [row[0], row[1], row[2], hours, minutes]
-            all_task.append(tasks_duration)
-            print(hours, minutes)
+        if self.cursor.rowcount is None:
+            print("You have not finished any task yet.\n")
+        else:
+            done_list = []
+            print('\nThese Are The Tasks You Have Completed With Time Taken\n')
+            for row in records:
+                start = datetime.strptime(str(row[3]), '%Y-%m-%d %H:%M')
+                stop = datetime.strptime(str(row[4]), '%Y-%m-%d %H:%M')
+                start_time, stop_time = start.strftime('%H:%M').split(':'), stop.strftime('%H:%M').split(':')
+                hours = int(stop_time[0]) - int(start_time[0])
+                minutes = int(stop_time[1]) - int(start_time[1])
+                tasks_duration = [row[0], row[1], row[2], hours, minutes]
+                done_list.append(tasks_duration)
 
-        print(tabulate(all_task, headers=["Task Id", "Task Name", "Status", "Hours Taken", "Minutes Taken"],
-                       numalign="center"))
+            print(tabulate(done_list, headers=["Task Id", "Task Name", "Status", "Hours Taken", "Minutes Taken"],
+                           numalign="center"))
+            print('\n')
 
