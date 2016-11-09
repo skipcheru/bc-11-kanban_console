@@ -1,14 +1,16 @@
 import sqlite3
 from datetime import datetime
+from tabulate import tabulate
+
 
 class KanBan(object):
-    
     def __init__(self):
         self.conn = sqlite3.connect('tasks.db')
         self.cursor = self.conn.cursor()
-        self.start = datetime.now().replace(microsecond=0)
-        
-     # Create database called tasks
+        self.start = datetime.now().strftime("%Y-%m-%d %H:%M")
+
+        # Create database called tasks
+
     def create_table(self):
         table = 'CREATE TABLE IF NOT EXITS task(' \
                 'id INTEGER PRIMARY KEY AUTO INCREMENT,' \
@@ -23,8 +25,8 @@ class KanBan(object):
         self.status = 'todo'
         insert_query = 'INSERT INTO task(title, status) VALUES(?, ?)'
         self.cursor.execute(insert_query, (self.title, self.status))
-        #self.cursor.execute("SELECT MAX(id),title,status,FROM tasks")
-        #task = self.cursor.fetchall()
+        # self.cursor.execute("SELECT MAX(id),title,status,FROM tasks")
+        # task = self.cursor.fetchall()
         self.conn.commit()
 
     def doing_task(self, tid):
@@ -52,31 +54,39 @@ class KanBan(object):
             doing_update = "UPDATE task SET status = ?, end_on = ? WHERE id = ?"
             self.cursor.execute(doing_update, (done, self.start, self.tid))
             self.conn.commit()
-            #print("You've successfully done the task")
+            print("You've successfully done the task")
 
     def list_all(self):
         query_all = 'SELECT * FROM task'
         self.cursor.execute(query_all)
-
+        task_list = []
         for row in self.cursor:
-            print('{0} : {1}, {2} {3}'.format(row[0], row[1], row[2], row[3]))
+            one_task_list = [row[0], row[1], row[2], row[3], row[4]]
+            task_list.append(one_task_list)
+
+        print(tabulate(task_list, headers=["Task Id", "Task Name", "Status", "Start Time", "Finish Time"],
+                       numalign="center"))
 
     def list_doing(self):
         query_todo = "SELECT * FROM task WHERE status = 'doing'"
         self.cursor.execute(query_todo)
+        doing_list = []
         for row in self.cursor:
-            print('{0} : {1}, {2} {3} '.format(row[0], row[1], row[2], row[3]))
+            one_task_list = [row[0], row[1], row[2], row[3], row[4]]
+            doing_list.append(one_task_list)
+
+        print(tabulate(doing_list, headers=["Task Id", "Task Name", "Status", "Start Time", "Finish Time"],
+                       numalign="center"))
 
     def list_done(self):
         query_done = "SELECT * FROM task WHERE status = 'done'"
         self.cursor.execute(query_done)
+        done_list = []
         for row in self.cursor:
-            print('{0} : {1}, {2} {3}'.format(row[0], row[1], row[2], row[3]))
+            one_task_list = [row[0], row[1], row[2], row[3], row[4]]
+            done_list.append(one_task_list)
+
+        print(tabulate(done_list, headers=["Task Id", "Task Name", "Status", "Start Time", "Finish Time"],
+                       numalign="center"))
 
 
-
-
-
-kanban = KanBan()
-kanban.done_task(10)
-#kanban.list_all()
