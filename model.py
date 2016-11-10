@@ -8,11 +8,12 @@ class KanBan(object):
         self.conn = sqlite3.connect('tasks.db')
         self.cursor = self.conn.cursor()
         self.start = datetime.now().strftime("%Y-%m-%d %H:%M")
+        self.create_table()
 
         # Create database called tasks if not created
 
     def create_table(self):
-        table = 'CREATE TABLE task(' \
+        table = 'CREATE TABLE IF NOT EXISTS task(' \
                 'id INTEGER PRIMARY KEY AUTOINCREMENT,' \
                 'title TEXT,' \
                 'status TEXT, ' \
@@ -192,6 +193,5 @@ class KanBan(object):
                     self.conn.commit()
             else:
                 print('Invalid section')
-
 
 
