@@ -3,7 +3,7 @@
 This example uses docopt with the built in cmd module to demonstrate an
 interactive command application.
 Usage:
-    kanban todo (<name>)
+    kanban todo <name>...
     kanban doing <task_id>
     kanban done <task_id>
     kanban list <command>
@@ -52,19 +52,18 @@ def docopt_cmd(func):
 
 
 class MyInteractive(cmd.Cmd):
-    intro = 'Welcome to KanBan! We organize your tasks!' \
-        + ' (Type help for a list of commands.\n ' \
-          '\t\tKANBAN APP\n\
-        Create A new Task\n\
-        Start Doing A Task\n\
-        Complete A Task\n\
-        View Added Task\n\
-        View Tasks You are Doing\n\
-        View Completed Task\n\
-        View All Tasks\n\
-        View All Tasks By Status\n'
+    intro = '\tWelcome to KanBan! Organize your tasks!\n' \
+        + '\tType help for a list of commands.\n ' \
+          '\tUsage:\n' \
+            '\ttodo <name>...\n'\
+            '\tdoing <task_id>\n' \
+            '\tdone <task_id>\n' \
+            '\tlist <command>\n' \
+            '\t-i | --interactive\n' \
+            '\t-h | --help | --version\n' \
+            '\tquit to exit'
 
-    prompt = '(KanBan) '
+    promupt = '(KanBan) '
     file = None
     kanban = KanBan()
 
@@ -90,7 +89,7 @@ class MyInteractive(cmd.Cmd):
     # start commands here
     @docopt_cmd
     def do_todo(self, args):
-        """Usage: todo <name>"""
+        """Usage: todo <name>..."""
         self.create(args["<name>"])
 
     @docopt_cmd
@@ -112,6 +111,8 @@ class MyInteractive(cmd.Cmd):
             self.doing_tasks()
         elif args['<command>'] == 'done':
             self.done_tasks()
+        else:
+            print('Invalid Command! use <all> or <done> or <doing>\n eg list all.')
 
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""
