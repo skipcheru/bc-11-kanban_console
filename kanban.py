@@ -54,13 +54,13 @@ def docopt_cmd(func):
 class MyInteractive(cmd.Cmd):
     intro = '\tWelcome to KanBan! Organize your tasks!\n' \
         + '\tType help for a list of commands.\n ' \
-          '\tUsage:\n' \
+          '\tList of commands:\n' \
             '\ttodo <name>...\n'\
-            '\tdoing <task_id>\n' \
-            '\tdone <task_id>\n' \
-            '\tlist <command>\n' \
-            '\t-i | --interactive\n' \
-            '\t-h | --help | --version\n' \
+            '\tdoing task_id\n' \
+            '\tdone task_id\n' \
+            '\tlist all\n' \
+            '\tlist doing\n' \
+            '\tlist done\n' \
             '\tquit to exit'
 
     prompt = '(KanBan) '
