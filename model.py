@@ -55,8 +55,9 @@ class KanBan(object):
     def list_all(self):
         query_all = 'SELECT * FROM task'
         self.cursor.execute(query_all)
+        check = self.cursor.fetchall()
         # check if there is any to do tasks
-        if self.cursor.rowcount is None:
+        if not self.cursor.fetchall():
             print("\nYour Todo List is Empty. Create One if You Like\n")
 
         else:
@@ -74,15 +75,13 @@ class KanBan(object):
         self.cursor.execute(query_doing)
         records = self.cursor.fetchall()
 
-        if self.cursor.rowcount is None:
-            print("You have not finished any task yet.\n")
+        if not records:
+            print("\nYou Have Not Started Doing Any Task Yet.\n")
         else:
             done_list = []
             print('\nThese Are The Tasks You Are Currently Doing and Duration Taken\n')
             for row in records:
                 start = datetime.strptime(self.start, '%Y-%m-%d %H:%M')
-                print(start)
-                print(self.start)
                 stop = datetime.strptime(str(row[3]), '%Y-%m-%d %H:%M')
                 start_time, stop_time = start.strftime('%H:%M').split(':'), stop.strftime('%H:%M').split(':')
                 hours = int(stop_time[0]) - int(start_time[0])
@@ -98,8 +97,8 @@ class KanBan(object):
         query_done = "SELECT id, title, status, start_on, end_on FROM task WHERE status = 'done'"
         self.cursor.execute(query_done)
         records = self.cursor.fetchall()
-        if self.cursor.rowcount is None:
-            print("You have not finished any task yet.\n")
+        if not records:
+            print("\nYou have not finished any task yet.\n")
         else:
             done_list = []
             print('\nThese Are The Tasks You Have Completed With Time Taken\n')
@@ -146,7 +145,6 @@ class KanBan(object):
             print(tabulate(done_list, headers=["Task Id", "Task Name", "Section", "Hours Taken", "Minutes Taken"],
                            numalign="center"))
             print('\n')
-
 
     def move_task(self, task_id, section):
         self.task_id = task_id
@@ -212,7 +210,3 @@ class KanBan(object):
                 print('Invalid section')
 
 
-#
-#
-# kanban = KanBan()
-# kanban.create_task(['Demo', 'list', 'task'])
