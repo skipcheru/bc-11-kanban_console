@@ -4,10 +4,12 @@ KanBan is a console application that is used to manage to-do tasks using the Kan
 # Installation
 First setup a virtual environment to install the application's dependencies:
 To get started with KanBan Console, clone this repository:
-        1. Go To KanBan Console GitHub Repository(https://github.com/skipcheru/bc-11-kanban_console) .
-        2. Clone the Repository.
-        3. Install the Requirements From the requirements.txt File.
-        4. Run The kanban.py file.
+
+1. Go To KanBan Console GitHub Repository(https://github.com/skipcheru/bc-11-kanban_console) .
+2. Clone the Repository.
+3. Install the Requirements From the requirements.txt File.
+4. Run The kanban.py file.
+
 ```sh
 $ git clone https://github.com/skipcheru/bc-11-kanban_console.git
 $ cd bc-11-kanban_console
