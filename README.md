@@ -1,15 +1,13 @@
 # KanBan Console App
 KanBan is a console application that is used to manage to-do tasks using the KanBan way of organizing todo into 3 sections: todo, doing, done. The app also tracks the time taken on a particular task and displays each task in the doing and done section with the time-taken so far on the task.
-This application uses the [AfricasTalking SMS Gateway](https://africastalking.com/) to send one-way text messages to an intended recipient.
-
 
 # Installation
 First setup a virtual environment to install the application's dependencies:
 ```sh
 $ pip install virtualenv
-$ virtualenv environment_name
+$ virtualenv environment
 $ source environment_name/bin/activate
-$ cd environment_name
+$ cd environment
 ```
 To get started with KanBan Console, clone this repository: 
 ```sh
@@ -36,12 +34,14 @@ Welcome to KanBan Console Application! Add, organize and view your tasks
 
 # Functionality
 ### `help` command
-A user can find the built-in functionality of the application can be found using the `help` command during interactive mode:
+A user can view the application commands using the `help` command during interactive mode:
 ```sh
-(Contacts) help
+(KanBan Console) help
+
 Documented commands (type help <topic>):
 ========================================
-add  help  quit  search  text  view
+doing  done  help  list  quit  todo
+
 ```
 Typing `add -h` makes use of the help `-h` option command to get more insight to an application command:
 ```sh
