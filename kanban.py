@@ -63,7 +63,7 @@ class MyInteractive(cmd.Cmd):
             '\t-h | --help | --version\n' \
             '\tquit to exit'
 
-    promupt = '(KanBan) '
+    prompt = '(KanBan) '
     file = None
     kanban = KanBan()
 
