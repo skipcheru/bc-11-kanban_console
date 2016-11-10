@@ -50,7 +50,6 @@ Create a todo task. For example todo email Kipngotie at 2pm
         Usage: todo <name>...
 ```
 
-
 ### `todo` command
 To add a todo task , use the following command followed by task name:
 ```sh
@@ -64,27 +63,24 @@ Task added!
 
 ```
 
-
-### `search` command
-Type `search -h` to find the structure of the command:
+### `doing` command
+Type `doing -h` to see how command must be typed:
 ```sh
-(Contacts) search -h
-Search a person in contacts list.
-        Usage:
-        	search <person_name>
+(KanBan Console) doing -h
+ Start doing a task. For example: doing 52
+        Usage: doing <task_id>
 ```
-To search a phone number or a contact name, you may enter the whole search term or part of the search term:
+To start doing a task or move a task to doing section, enter the command doing with task id:
 ```sh
-(Contacts) search gilbert
-Found the following results: {254707012536: 'Gilbert Gathara', 254771374163: 'Gilbert Kariuki'}
+(KanBan Console) doing 54
 
-(Contacts) search gat
-Found the following results: {254707012536: 'Gilbert Gathara'}
+Great! You have started doing the Following Task
 
-(Contacts) search 74
-Found the following results: {254771374163: 'Gilbert Kariuki'}
+ Task Id   Task Name                Section    Start Time        Finish Time
+---------  -----------------------  ---------  ----------------  -------------
+   54      consult fellows on bugs  doing      2016-11-10 20:11
+
 ```
-
 
 ### `text` command
 To get more insight into the command, type in the following:
