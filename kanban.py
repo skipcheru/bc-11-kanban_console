@@ -52,18 +52,17 @@ def docopt_cmd(func):
 
 
 class MyInteractive(cmd.Cmd):
-    intro = '\tWelcome to KanBan! Organize your tasks!\n' \
-        + '\tType help for a list of commands.\n ' \
-          '\tList of commands:\n' \
-            '\ttodo <name>...\n'\
-            '\tdoing task_id\n' \
-            '\tdone task_id\n' \
-            '\tlist all\n' \
-            '\tlist doing\n' \
-            '\tlist done\n' \
-            '\tquit to exit'
+    intro = 'Welcome to KanBan Console Application! Add, organize and view your tasks\n' \
+            '\tThe Commands For Any Action Are Listed Below\n' \
+            '\tCreate A todo Task: todo task_name \n' \
+            '\tStart Doing Task: doing task_id \n' \
+            '\tMark Task Done :  done task_id \n' \
+            '\tView Task You Are Doing :  list doing \n' \
+            '\tView Task You Have Finished :  list done \n' \
+            '\tView All Your Tasks :  list all \n' \
+            '\tTo Exit : quit'
 
-    prompt = '(KanBan) '
+    prompt = '(KanBan Console) '
     file = None
     kanban = KanBan()
 
@@ -89,17 +88,20 @@ class MyInteractive(cmd.Cmd):
     # start commands here
     @docopt_cmd
     def do_todo(self, args):
-        """Usage: todo <name>..."""
+        """Create a todo task. For example todo email Kipngotie at 2pm
+        Usage: todo <name>..."""
         self.create(args["<name>"])
 
     @docopt_cmd
     def do_done(self, args):
-        """Usage: done <task_id>"""
+        """Finish a task. For example: done 52
+        Usage: done <task_id>"""
         self.done(int(args["<task_id>"]))
 
     @docopt_cmd
     def do_doing(self, args):
-        """Usage: doing <task_id>"""
+        """ Start doing a task. For example: doing 52
+        Usage: doing <task_id>"""
         self.doing(int(args["<task_id>"]))
 
     @docopt_cmd
@@ -116,7 +118,7 @@ class MyInteractive(cmd.Cmd):
 
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""
-        print('Good Bye!')
+        print('\nBye Bye! See you soon!\n')
         exit()
 
 # interactive mode
