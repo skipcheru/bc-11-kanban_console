@@ -12,20 +12,20 @@ class KanBan(object):
         # Create database called tasks if not created
 
     def create_table(self):
-        table = 'CREATE TABLE IF NOT EXITS task(' \
-                'id INTEGER PRIMARY KEY AUTO INCREMENT,' \
+        table = 'CREATE TABLE task(' \
+                'id INTEGER PRIMARY KEY AUTOINCREMENT,' \
                 'title TEXT,' \
                 'status TEXT, ' \
                 'start_on DATETIME, ' \
                 'end_on DATETIME );'
         self.cursor.execute(table)
 
-    def create_task(self, title):
-        self.title = title
-        self.task_name = ' '.join(self.title)
-        self.status = 'todo'
+    def create_task(self, name):
+        self.name = name
+        self.task_name = ' '.join(self.name)
+        self.section = 'todo'
         insert_query = 'INSERT INTO task(title, status) VALUES(?, ?)'
-        self.cursor.execute(insert_query, (self.task_name, self.status))
+        self.cursor.execute(insert_query, (self.task_name, self.section))
 
         # get the created task
         print("\nTask added!\n")
@@ -38,113 +38,96 @@ class KanBan(object):
 
             task_list = [row[0], row[1], row[2], row[3], row[4]]
 
-        print(tabulate([task_list], headers=["Task Id", "Task Name", "Status", "Section", "Finish Time"],
+        print(tabulate([task_list], headers=["Task Id", "Task Name", "Section", "Start Time", "Finish Time"],
                            numalign="center"))
         self.conn.commit()
 
         print('\n')
 
     def doing_task(self, task_id):
-
+        # move the task to doing section
         self.move_task(task_id, 'doing')
 
     def done_task(self, task_id):
-
+        # move task to done section
         self.move_task(task_id, 'done')
 
     def list_all(self):
-        query_all = 'SELECT * FROM task'
-        self.cursor.execute(query_all)
-        check = self.cursor.fetchall()
-        # check if there is any to do tasks
-        if not self.cursor.fetchall():
-            print("\nYour Todo List is Empty. Create One if You Like\n")
-
-        else:
-            task_list = []
-            for row in self.cursor:
-                one_task_list = [row[0], row[1], row[2], row[3], row[4]]
-                task_list.append(one_task_list)
-
-            print(tabulate(task_list, headers=["Task Id", "Task Name", "Section", "Start Time", "Finish Time"],
-                           numalign="center"))
-            print('\n')
+        section = 'all'
+        self.list_section(section)
 
     def list_doing(self):
-        query_doing = "SELECT * FROM task WHERE status = 'doing'"
-        self.cursor.execute(query_doing)
-        records = self.cursor.fetchall()
-
-        if not records:
-            print("\nYou Have Not Started Doing Any Task Yet.\n")
-        else:
-            done_list = []
-            print('\nThese Are The Tasks You Are Currently Doing and Duration Taken\n')
-            for row in records:
-                start = datetime.strptime(self.start, '%Y-%m-%d %H:%M')
-                stop = datetime.strptime(str(row[3]), '%Y-%m-%d %H:%M')
-                start_time, stop_time = start.strftime('%H:%M').split(':'), stop.strftime('%H:%M').split(':')
-                hours = int(stop_time[0]) - int(start_time[0])
-                minutes = int(stop_time[1]) - int(start_time[1])
-                tasks_duration = [row[0], row[1], row[2], hours, minutes]
-                done_list.append(tasks_duration)
-
-            print(tabulate(done_list, headers=["Task Id", "Task Name", "Section", "Hours Taken", "Minutes Taken"],
-                           numalign="center"))
-            print('\n')
+        section = 'doing'
+        self.list_section(section)
 
     def list_done(self):
-        query_done = "SELECT id, title, status, start_on, end_on FROM task WHERE status = 'done'"
-        self.cursor.execute(query_done)
-        records = self.cursor.fetchall()
-        if not records:
-            print("\nYou have not finished any task yet.\n")
-        else:
-            done_list = []
-            print('\nThese Are The Tasks You Have Completed With Time Taken\n')
-            for row in records:
-                start = datetime.strptime(str(row[3]), '%Y-%m-%d %H:%M')
-                stop = datetime.strptime(str(row[4]), '%Y-%m-%d %H:%M')
-                start_time, stop_time = start.strftime('%H:%M').split(':'), stop.strftime('%H:%M').split(':')
-                hours = int(stop_time[0]) - int(start_time[0])
-                minutes = int(stop_time[1]) - int(start_time[1])
-                tasks_duration = [row[0], row[1], row[2], hours, minutes]
-                done_list.append(tasks_duration)
-
-            print(tabulate(done_list, headers=["Task Id", "Task Name", "Section", "Hours Taken", "Minutes Taken"],
-                           numalign="center"))
-            print('\n')
+        section = 'done'
+        self.list_section(section)
 
     def list_section(self, section):
         self.section = section
-        #query_section = None
 
         if self.section == 'done':
             query_section = "SELECT id, title, status, start_on, end_on FROM task WHERE status = 'done'"
+            self.cursor.execute(query_section)
+            records = self.cursor.fetchall()
+            if not records:
+                print("You have not finished any task yet.\n")
+            else:
+                done_list = []
+                print('\nThese Are The Tasks You Have Completed With Time Taken\n')
+                for row in records:
+                    start = datetime.strptime(str(row[3]), '%Y-%m-%d %H:%M')
+                    stop = datetime.strptime(str(row[4]), '%Y-%m-%d %H:%M')
+                    start_time, stop_time = start.strftime('%H:%M').split(':'), stop.strftime('%H:%M').split(':')
+                    hours = int(stop_time[0]) - int(start_time[0])
+                    minutes = int(stop_time[1]) - int(start_time[1])
+                    tasks_duration = [row[0], row[1], row[2], hours, minutes]
+                    done_list.append(tasks_duration)
+
+                print(tabulate(done_list, headers=["Task Id", "Task Name", "Section", "Hours Taken", "Minutes Taken"],
+                               numalign="center"))
+                print('\n')
 
         elif self.section == 'doing':
-            start = datetime.strptime(self.start, '%Y-%m-%d %H:%M')
             query_section = "SELECT id, title, status, start_on, end_on FROM task WHERE status = 'doing'"
 
-        self.cursor.execute(query_section)
-        records = self.cursor.fetchall()
-        if self.cursor.rowcount is None:
-            print("You have not finished any task yet.\n")
-        else:
-            done_list = []
-            print('\nThese Are The Tasks You Have Completed With Time Taken\n')
-            for row in records:
-                start = datetime.strptime(str(row[3]), '%Y-%m-%d %H:%M')
-                stop = datetime.strptime(str(row[4]), '%Y-%m-%d %H:%M')
-                start_time, stop_time = start.strftime('%H:%M').split(':'), stop.strftime('%H:%M').split(':')
-                hours = int(stop_time[0]) - int(start_time[0])
-                minutes = int(stop_time[1]) - int(start_time[1])
-                tasks_duration = [row[0], row[1], row[2], hours, minutes]
-                done_list.append(tasks_duration)
+            self.cursor.execute(query_section)
+            records = self.cursor.fetchall()
+            if not records:
+                print("You have not finished any task yet.\n")
+            else:
+                done_list = []
+                print('\nThese Are The Tasks You Have Completed With Time Taken\n')
+                for row in records:
+                    stop = datetime.strptime(self.start, '%Y-%m-%d %H:%M')
+                    start = datetime.strptime(str(row[3]), '%Y-%m-%d %H:%M')
+                    start_time, stop_time = start.strftime('%H:%M').split(':'), stop.strftime('%H:%M').split(':')
+                    hours = int(stop_time[0]) - int(start_time[0])
+                    minutes = int(stop_time[1]) - int(start_time[1])
+                    tasks_duration = [row[0], row[1], row[2], hours, minutes]
+                    done_list.append(tasks_duration)
 
-            print(tabulate(done_list, headers=["Task Id", "Task Name", "Section", "Hours Taken", "Minutes Taken"],
-                           numalign="center"))
-            print('\n')
+                print(tabulate(done_list, headers=["Task Id", "Task Name", "Section", "Hours Taken", "Minutes Taken"],
+                               numalign="center"))
+                print('\n')
+
+        elif self.section == 'all':
+            query_section = "SELECT * FROM task"
+            self.cursor.execute(query_section)
+            records = self.cursor.fetchall()
+            if not records:
+                print("You have not finished any task yet.\n")
+            else:
+                done_list = []
+                print('\nThese Are The Tasks You Have Completed With Time Taken\n')
+                for row in records:
+                    tasks_duration = [row[0], row[1], row[2], row[3], row[4]]
+                    done_list.append(tasks_duration)
+
+                print(tabulate(done_list, headers=["Task Id", "Task Name", "Section", "Start Time", "Stop Time"],
+                               numalign="center"))
+                print('\n')
 
     def move_task(self, task_id, section):
         self.task_id = task_id
@@ -191,10 +174,10 @@ class KanBan(object):
                     self.conn.commit()
 
                 elif task_section == 'doing':
-
+                    current_time = datetime.now().strftime("%Y-%m-%d %H:%M")
                     # move the task to the appropriate section
                     move_task = "UPDATE task SET status = ?, end_on = ? WHERE id = ?"
-                    done_cursor = self.cursor.execute(move_task, (self.section, self.start, self.task_id))
+                    done_cursor = self.cursor.execute(move_task, (self.section, current_time, self.task_id))
                     self.cursor.execute("SELECT * FROM task WHERE id = ?", (self.task_id,))
                     print("\nGreat! You have finished the Following Task\n")
                     task = done_cursor.fetchall()
@@ -209,4 +192,7 @@ class KanBan(object):
             else:
                 print('Invalid section')
 
+
+# kanban = KanBan()
+# kanban.list_section('done')
 
