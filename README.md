@@ -82,29 +82,24 @@ Great! You have started doing the Following Task
 
 ```
 
-### `text` command
-To get more insight into the command, type in the following:
+### `done` command
+Type `doing -h` to see how command must be typed:
 ```sh
-(Contacts) text -h
-Message a person in contacts list.
-        Usage:
-        	text <person_name> -m <message>
+(KanBan Console) done -h
+Finish a task. For example: done 52
+        Usage: done <task_id>
 ```
-Sending a one-way text message to one of the contacts can be achieved using:
+To finish a task or move a task to done section, enter the command done with task id:
 ```sh
-(Contacts) text gilbert -m 'Hey, wassup, Gilu'
-Message sent! 
-To: +254707079079 
-Sms Charges: KES 1.0000
-```
-The same is also possible using an entire person's name or part of the name:
-```sh
-(Contacts) text gat -m 'Hey, wassup, Gilu'
-Message sent! 
-To: +254707012536 
-Sms Charges: KES 1.0000
-```
+(KanBan Console) done 54
 
+Great! You have finished the Following Task
+
+ Task Id   Task Name                Section    Start Time        Finish Time
+---------  -----------------------  ---------  ----------------  ---------------
+-
+   54      consult fellows on bugs  done       2016-11-10 20:11  2016-11-10 20:49
+```
 
 ### `view` command
 The view command allows a user to see all messages sent, either to a specific contact or every message sent. To do this, use the following command:
