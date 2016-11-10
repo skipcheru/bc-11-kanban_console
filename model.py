@@ -22,64 +22,35 @@ class KanBan(object):
 
     def create_task(self, title):
         self.title = title
+        self.task_name = ' '.join(self.title)
         self.status = 'todo'
         insert_query = 'INSERT INTO task(title, status) VALUES(?, ?)'
-        self.cursor.execute(insert_query, (self.title, self.status))
+        self.cursor.execute(insert_query, (self.task_name, self.status))
+
         # get the created task
         print("\nTask added!\n")
+
         self.cursor.execute("SELECT MAX(id), title, status, start_on, end_on FROM task")
+
         task = self.cursor.fetchall()
+
         for row in task:
+
             task_list = [row[0], row[1], row[2], row[3], row[4]]
+
         print(tabulate([task_list], headers=["Task Id", "Task Name", "Status", "Section", "Finish Time"],
                            numalign="center"))
         self.conn.commit()
+
         print('\n')
 
-    def doing_task(self, tid):
-        self.tid = tid
-        check = "SELECT * FROM task WHERE id = ?"
-        self.cursor.execute(check, (self.tid,))
-        data = self.cursor.fetchone()
-        if data is None:
-            print('Sorry the task does not exits')
-        else:
-            doing = 'doing'
-            doing_update = "UPDATE task SET status = ?, start_on = ? WHERE id = ?"
-            self.cursor.execute(doing_update, (doing, self.start, self.tid))
-            #
-            self.cursor.execute("SELECT * FROM task WHERE id = ?", (self.tid,))
-            print("\nGreat! You have started doing\n")
-            task = self.cursor.fetchall()
-            for row in task:
-                task_list = [row[0], row[1], row[2], row[3], row[4]]
-            print(tabulate([task_list], headers=["Task Id", "Task Name", "Section", "Start Time", "Finish Time"],
-                           numalign="center"))
-            print('\n')
+    def doing_task(self, task_id):
 
-            self.conn.commit()
+        self.move_task(task_id, 'doing')
 
-    def done_task(self, tid):
-        self.tid = tid
-        check = "SELECT id, status FROM task WHERE id = ? AND status = 'doing'"
-        self.cursor.execute(check, (self.tid,))
-        data = self.cursor.fetchone()
-        if data is None:
-            print('\nSorry! You have not Started doing that Task')
-        else:
-            done = 'done'
-            doing_update = "UPDATE task SET status = ?, end_on = ? WHERE id = ?"
-            self.cursor.execute(doing_update, (done, self.start, self.tid))
-            #
-            self.cursor.execute("SELECT * FROM task WHERE id = ?", (self.tid,))
-            print("\nYou've successfully done the task\n")
-            task = self.cursor.fetchall()
-            for row in task:
-                task_list = [row[0], row[1], row[2], row[3], row[4]]
-            print(tabulate([task_list], headers=["Task Id", "Task Name", "Section", "Start Time", "Finish Time"],
-                           numalign="center"))
-            self.conn.commit()
-            print('\n')
+    def done_task(self, task_id):
+
+        self.move_task(task_id, 'done')
 
     def list_all(self):
         query_all = 'SELECT * FROM task'
@@ -123,22 +94,6 @@ class KanBan(object):
                            numalign="center"))
             print('\n')
 
-    def all_list_done(self):
-        query_done = "SELECT * FROM task WHERE status = 'done'"
-        self.cursor.execute(query_done)
-        if self.cursor.rowcount is None:
-            print("You have not finished any task yet.\n")
-        else:
-            done_list = []
-            print('\nThese Are The Tasks You Have Completed\n')
-            for row in self.cursor:
-                one_task_list = [row[0], row[1], row[2], row[3], row[4]]
-                done_list.append(one_task_list)
-
-            print(tabulate(done_list, headers=["Task Id", "Task Name", "Status", "Start Time", "Finish Time"],
-                           numalign="center"))
-            print('\n')
-
     def list_done(self):
         query_done = "SELECT id, title, status, start_on, end_on FROM task WHERE status = 'done'"
         self.cursor.execute(query_done)
@@ -161,3 +116,103 @@ class KanBan(object):
                            numalign="center"))
             print('\n')
 
+    def list_section(self, section):
+        self.section = section
+        #query_section = None
+
+        if self.section == 'done':
+            query_section = "SELECT id, title, status, start_on, end_on FROM task WHERE status = 'done'"
+
+        elif self.section == 'doing':
+            start = datetime.strptime(self.start, '%Y-%m-%d %H:%M')
+            query_section = "SELECT id, title, status, start_on, end_on FROM task WHERE status = 'doing'"
+
+        self.cursor.execute(query_section)
+        records = self.cursor.fetchall()
+        if self.cursor.rowcount is None:
+            print("You have not finished any task yet.\n")
+        else:
+            done_list = []
+            print('\nThese Are The Tasks You Have Completed With Time Taken\n')
+            for row in records:
+                start = datetime.strptime(str(row[3]), '%Y-%m-%d %H:%M')
+                stop = datetime.strptime(str(row[4]), '%Y-%m-%d %H:%M')
+                start_time, stop_time = start.strftime('%H:%M').split(':'), stop.strftime('%H:%M').split(':')
+                hours = int(stop_time[0]) - int(start_time[0])
+                minutes = int(stop_time[1]) - int(start_time[1])
+                tasks_duration = [row[0], row[1], row[2], hours, minutes]
+                done_list.append(tasks_duration)
+
+            print(tabulate(done_list, headers=["Task Id", "Task Name", "Section", "Hours Taken", "Minutes Taken"],
+                           numalign="center"))
+            print('\n')
+
+
+    def move_task(self, task_id, section):
+        self.task_id = task_id
+        self.section = section
+
+        # check first if the task exits
+        check = "SELECT * FROM task WHERE id = ?"
+        self.cursor.execute(check, (self.task_id,))
+        data = self.cursor.fetchone()
+        task_section = data[2]
+        if data is None:
+            print('Sorry the task does not exits')
+        else:
+            # check task section if to do or doing
+            # print(task_section) <debug here...>
+            if task_section == 'todo' and self.section == 'done':
+                print('\nSorry! You have not Started doing that Task\n')
+
+            elif task_section == 'done' and (self.section == 'done' or self.section == 'doing'):
+                print('\nHey! You have Finished doing that Task\n')
+
+            elif task_section == 'doing' and self.section == 'doing':
+                print('\nHey! You are currently doing that Task\n')
+
+            elif (task_section == 'todo' and self.section == 'doing') \
+                    or (task_section == 'doing' and self.section == 'done'):
+
+                # get the moved task and display to the user
+
+                if task_section == 'todo':
+                    # move the task to the appropriate section
+                    move_task = "UPDATE task SET status = ?, start_on = ? WHERE id = ?"
+                    self.cursor.execute(move_task, (self.section, self.start, self.task_id))
+                    self.cursor.execute("SELECT * FROM task WHERE id = ?", (self.task_id,))
+                    print("\nGreat! You have started doing the Following Task\n")
+                    started_task = self.cursor.fetchall()
+                    for row in started_task:
+
+                        task_list = [row[0], row[1], row[2], row[3], row[4]]
+
+                    print(tabulate([task_list], headers=["Task Id", "Task Name", "Section", "Start Time", "Finish Time"],
+                                   numalign="center"))
+                    print('\n')
+                    self.conn.commit()
+
+                elif task_section == 'doing':
+
+                    # move the task to the appropriate section
+                    move_task = "UPDATE task SET status = ?, end_on = ? WHERE id = ?"
+                    done_cursor = self.cursor.execute(move_task, (self.section, self.start, self.task_id))
+                    self.cursor.execute("SELECT * FROM task WHERE id = ?", (self.task_id,))
+                    print("\nGreat! You have finished the Following Task\n")
+                    task = done_cursor.fetchall()
+                    for row in task:
+                        task_list = [row[0], row[1], row[2], row[3], row[4]]
+
+                    print(tabulate([task_list], headers=["Task Id", "Task Name", "Section", "Start Time", "Finish Time"],
+                                   numalign="center"))
+                    print('\n')
+
+                    self.conn.commit()
+            else:
+                print('Invalid section')
+
+
+#
+#
+# kanban = KanBan()
+# kanban.create_task(['Demo', 'list', 'task'])
