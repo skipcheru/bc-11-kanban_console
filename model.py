@@ -72,7 +72,7 @@ class KanBan(object):
             self.cursor.execute(query_section)
             records = self.cursor.fetchall()
             if not records:
-                print("You have not finished any task yet.\n")
+                print("\nYou have not finished any task yet.\n")
             else:
                 done_list = []
                 print('\nThese Are The Tasks You Have Completed With Time Taken\n')
@@ -95,7 +95,7 @@ class KanBan(object):
             self.cursor.execute(query_section)
             records = self.cursor.fetchall()
             if not records:
-                print("You have not finished any task yet.\n")
+                print("\nYou have not finished any task yet.\n")
             else:
                 done_list = []
                 print('\nThese Are The Tasks You Have Completed With Time Taken\n')
@@ -117,7 +117,7 @@ class KanBan(object):
             self.cursor.execute(query_section)
             records = self.cursor.fetchall()
             if not records:
-                print("You have not finished any task yet.\n")
+                print("\nYou have not finished any task yet.\n")
             else:
                 done_list = []
                 print('\nThese Are The Tasks You Have Completed With Time Taken\n')
@@ -137,12 +137,13 @@ class KanBan(object):
         check = "SELECT * FROM task WHERE id = ?"
         self.cursor.execute(check, (self.task_id,))
         data = self.cursor.fetchone()
-        task_section = data[2]
+
         if data is None:
             print('Sorry the task does not exits')
         else:
             # check task section if to do or doing
             # print(task_section) <debug here...>
+            task_section = data[2]
             if task_section == 'todo' and self.section == 'done':
                 print('\nSorry! You have not Started doing that Task\n')
 
@@ -193,6 +194,4 @@ class KanBan(object):
                 print('Invalid section')
 
 
-# kanban = KanBan()
-# kanban.list_section('done')
 
