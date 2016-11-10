@@ -17,7 +17,7 @@ $ pip install -r requirements.txt
 ```
 
 # Getting Started
-KanBan Console was developed using Python version `3.5.2` in mind and therefore may not work properly on Python version `2`. The console application interactive mode is accessed by running the following command:
+KanBan Console was developed using Python version `3.5.2` in mind and therefore may not work properly on Python version below 3. The console application interactive mode is accessed by running the following command:
 ```sh
 (venv) C:\Users\Ngotie\kanban>python kanban.py -i
 Welcome to KanBan Console Application! Add, organize and view your tasks
@@ -43,23 +43,25 @@ Documented commands (type help <topic>):
 doing  done  help  list  quit  todo
 
 ```
-Typing `add -h` makes use of the help `-h` option command to get more insight to an application command:
+For example typing `todo -h` makes use of the help `-h` option command to get more insight to an application command:
 ```sh
-(Contacts) add -h
-Add a person to contacts list.
-        Usage:
-          add -n <person_name> <other_name> -p <phone_number>
+(KanBan Console) todo -h
+Create a todo task. For example todo email Kipngotie at 2pm
+        Usage: todo <name>...
 ```
 
 
-### `add` command
-To add a contact name and phone number combination, use the following command:
+### `todo` command
+To add a todo task , use the following command followed by task name:
 ```sh
-(Contacts) add -n gilbert gathara -p 0707012536
-Added Contact: Gilbert Gathara, Phone number: +254707012536
+(KanBan Console) todo install ubuntu on desktop pc
 
-(Contacts) add -n gilbert kariuki -p 0771374163
-Added Contact: Gilbert Kariuki, Phone number: +254771374163
+Task added!
+
+ Task Id   Task Name                     Section    Start Time    Finish Time
+---------  ----------------------------  ---------  ------------  -------------
+   53      install ubuntu on desktop pc  todo
+
 ```
 
 
