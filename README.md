@@ -97,37 +97,58 @@ Great! You have finished the Following Task
 
  Task Id   Task Name                Section    Start Time        Finish Time
 ---------  -----------------------  ---------  ----------------  ---------------
--
    54      consult fellows on bugs  done       2016-11-10 20:11  2016-11-10 20:49
 ```
 
-### `view` command
-The view command allows a user to see all messages sent, either to a specific contact or every message sent. To do this, use the following command:
+### `list` command
+The list command allows a user to see all tasks currently doing, tasks completed and all the todo tasks. To do this, use the following command with either all, doing or done:
 ```sh
-(Contacts) view
-Displaying all sent messages:
- [{254707012536: {'Gilbert Gathara': "'Hey, wassup, Gilu' "}}]
 
-(Contacts) view gil
-Displaying sent messages to contacts matching 'gil':
- [{254707012536: {'Gilbert Gathara': "'Hey, wassup, Gilu' "}}]
+(KanBan Console) list doing
+
+These Are The Tasks You are still doing with duration Taken
+
+ Task Id   Task Name                  Section     Hours Taken    Minutes Taken
+---------  -------------------------  ---------  -------------  ---------------
+   52      test new table format      doing            3              8
+   53      install ubuntu on desktop  doing            0              15
+
+```
+To view task in done section use `list done`. Example:
+```
+(KanBan Console) list done
+
+These Are The Tasks You Have Completed With Time Taken
+
+ Task Id   Task Name                Section     Hours Taken    Minutes Taken
+---------  -----------------------  ---------  -------------  ---------------
+   54      consult fellows on bugs  done             0              38
+   
+```
+To view your to do list use `list all`. Example:
+
+```
+(KanBan Console) list all
+
+These Are All Your todo Tasks in All The Sections.
+
+ Task Id   Task Name                          Section    Start Time        Stop Time
+---------  ---------------------------------  ---------  ----------------  ----------------
+   52      test new table format              doing      2016-11-10 17:49
+   53      install ubuntu on desktop          doing      2016-11-10 20:26
+   54      consult fellows on bugs            done       2016-11-10 20:11  2016-11-10 20:49
+   55      listen to sheepy mixes on youtube  todo
+
 ```
 
 ### `quit` command
 To loop out of the interactive shell and exit the console application, a user can use the `quit` command as so:
 ```sh
-(Contacts) quit
-Thank you for using Contacts Manager. Bye!
+(KanBan Console) quit
+Bye Bye! See you soon!
 ```
-Since you are still in a virtual environment, you can deactivate the environment by typing:
-```sh
-$ deactivate
-```
-
 
 # To Do
 
   * Synchronize the Sqlite database to Firebase
-  * View the contacts list
-  * Edit a contact name/phone number
-  * Delete a contact in contacts list
+
