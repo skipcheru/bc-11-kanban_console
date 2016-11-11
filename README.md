@@ -84,7 +84,7 @@ Great! You have started doing the Following Task
 
 
 ### `done` command
-Type `doing -h` to see how command must be typed:
+Type `done -h` to see how command must be typed:
 ```sh
 (KanBan Console) done -h
 Finish a task. For example: done 52
