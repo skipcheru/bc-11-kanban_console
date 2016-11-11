@@ -82,6 +82,7 @@ Great! You have started doing the Following Task
 
 ```
 
+
 ### `done` command
 Type `doing -h` to see how command must be typed:
 ```sh
@@ -101,7 +102,22 @@ Great! You have finished the Following Task
 ```
 
 ### `list` command
-The list command allows a user to see all tasks currently doing, tasks completed and all the todo tasks. To do this, use the following command with either all, doing or done:
+The list command allows a user to see all tasks currently doing, tasks completed and all the todo tasks. To do this, use the following command with either todo, all, doing or done:
+
+```
+(KanBan Console) list todo
+
+These Are the tasks You are supposed to do
+
+ Task Id   Task Name                          Section    Start Time    Stop Time
+
+---------  ---------------------------------  ---------  ------------  -----------
+   55      listen to sheepy mixes on youtube  todo
+   56      sleep for 3 hours                  todo
+
+
+```
+
 ```sh
 
 (KanBan Console) list doing
