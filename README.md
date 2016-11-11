@@ -104,6 +104,8 @@ Great! You have finished the Following Task
 ### `list` command
 The list command allows a user to see all tasks currently doing, tasks completed and all the todo tasks. To do this, use the following command with either todo, all, doing or done:
 
+To view task in todo section use `list todo`. Example:
+
 ```
 (KanBan Console) list todo
 
@@ -117,6 +119,7 @@ These Are the tasks You are supposed to do
 
 
 ```
+To view task in doing section use `list doing`. Example:
 
 ```sh
 
