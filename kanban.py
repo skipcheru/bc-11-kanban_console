@@ -54,13 +54,13 @@ def docopt_cmd(func):
 class MyInteractive(cmd.Cmd):
     intro = 'Welcome to KanBan Console Application! Add, organize and view your tasks\n' \
             '\tThe Commands For Any Action Are Listed Below\n' \
-            '\tCreate A todo Task: todo task_name \n' \
-            '\tStart Doing Task: doing task_id \n' \
-            '\tMark Task Done :  done task_id \n' \
-            '\tView Task You Are Doing :  list doing \n' \
-            '\tView Task You Have Finished :  list done \n' \
-            '\tView All Your Tasks :  list all \n' \
-            '\tTo Exit : quit'
+            '\ttodo task_name : Create A todo Task \n' \
+            '\tdoing task_id : Start Doing Task \n' \
+            '\tdone task_id  : Mark Task Done \n' \
+            '\tlist doing  : View Task You Are Doing \n' \
+            '\tlist done  : View Task You Have Finished\n' \
+            '\tlist all : View All Your Tasks\n' \
+            '\tquit : To Exit'
 
     prompt = '(KanBan Console) '
     file = None
@@ -85,6 +85,9 @@ class MyInteractive(cmd.Cmd):
     def done_tasks(self):
         self.kanban.list_done()
 
+    def todo_tasks(self):
+        self.kanban.list_todo()
+
     # start commands here
     @docopt_cmd
     def do_todo(self, args):
@@ -106,13 +109,17 @@ class MyInteractive(cmd.Cmd):
 
     @docopt_cmd
     def do_list(self, args):
-        """Usage: list <command> """
+        """List task as per their section.
+           list all, list done, list doing list todo
+        Usage: list <command> """
         if args['<command>'] == 'all':
             self.tasks()
         elif args['<command>'] == 'doing':
             self.doing_tasks()
         elif args['<command>'] == 'done':
             self.done_tasks()
+        elif args['<command>'] == 'todo':
+            self.todo_tasks()
         else:
             print('Invalid Command! use <all> or <done> or <doing>\n eg list all.')
 
