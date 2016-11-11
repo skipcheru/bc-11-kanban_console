@@ -164,13 +164,13 @@ class KanBan(object):
         self.task_id = task_id
         self.section = section
 
-        # check first if the task exits
+        # check first if the task exist
         check = "SELECT * FROM task WHERE id = ?"
         self.cursor.execute(check, (self.task_id,))
         data = self.cursor.fetchone()
 
         if data is None:
-            print('Sorry the task does not exits')
+            print('\nSorry the task does not exist.\n\nType list all to check the Task\n')
         else:
             # check task section if to do or doing
             # print(task_curent_section) <debug here...>
