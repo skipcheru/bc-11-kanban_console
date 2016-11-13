@@ -105,13 +105,13 @@ class MyInteractive(cmd.Cmd):
     def do_done(self, args):
         """Finish a task. For example: done 52
         Usage: done <task_id>"""
-        self.done(int(args["<task_id>"]))
+        self.done(args["<task_id>"])
 
     @docopt_cmd
     def do_doing(self, args):
         """ Start doing a task. For example: doing 52
         Usage: doing <task_id>"""
-        self.doing(int(args["<task_id>"]))
+        self.doing(args["<task_id>"])
 
     @docopt_cmd
     def do_list(self, args):
