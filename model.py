@@ -61,7 +61,7 @@ class KanBan(object):
         try:
             if isinstance(int(task_id), int):
                 self.move_task(task_id, 'done')
-                
+
         except ValueError:
             print("\nCome on, Task id is a Number!\n")
 
@@ -120,7 +120,7 @@ class KanBan(object):
             if not records:
                 print("\nYou are not doing anything now\n")
             else:
-                done_list = []
+                doing_list = []
                 print('\nThese Are The Tasks You Have Completed With Time Taken\n')
                 for row in records:
                     stop = datetime.strptime(self.start, '%Y-%m-%d %H:%M')
@@ -129,9 +129,9 @@ class KanBan(object):
                     hours = int(stop_time[0]) - int(start_time[0])
                     minutes = int(stop_time[1]) - int(start_time[1])
                     tasks_duration = [row[0], row[1], row[2], hours, minutes]
-                    done_list.append(tasks_duration)
+                    doing_list.append(tasks_duration)
 
-                print(tabulate(done_list, headers=["Task Id", "Task Name", "Section", "Hours Taken", "Minutes Taken"],
+                print(tabulate(doing_list, headers=["Task Id", "Task Name", "Section", "Hours Taken", "Minutes Taken"],
                                numalign="center"))
                 print('\n')
 
@@ -143,13 +143,13 @@ class KanBan(object):
             if not records:
                 print("\nYou have not finished any task yet.\n")
             else:
-                done_list = []
+                all_list = []
                 print('\nThese Are The Tasks You Have Completed With Time Taken\n')
                 for row in records:
                     tasks_duration = [row[0], row[1], row[2], row[3], row[4]]
-                    done_list.append(tasks_duration)
+                    all_list.append(tasks_duration)
 
-                print(tabulate(done_list, headers=["Task Id", "Task Name", "Section", "Start Time", "Stop Time"],
+                print(tabulate(all_list, headers=["Task Id", "Task Name", "Section", "Start Time", "Stop Time"],
                                numalign="center"))
                 print('\n')
             # done section tasks
@@ -160,13 +160,13 @@ class KanBan(object):
             if not records:
                 print("\nYou have not added any task yet.\n")
             else:
-                done_list = []
+                todo_list = []
                 print('\nThese Are the tasks You are supposed to do\n')
                 for row in records:
                     tasks_duration = [row[0], row[1], row[2], row[3], row[4]]
-                    done_list.append(tasks_duration)
+                    todo_list.append(tasks_duration)
 
-                print(tabulate(done_list, headers=["Task Id", "Task Name", "Section", "Start Time", "Stop Time"],
+                print(tabulate(todo_list, headers=["Task Id", "Task Name", "Section", "Start Time", "Stop Time"],
                                numalign="center"))
                 print('\n')
 
