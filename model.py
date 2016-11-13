@@ -121,7 +121,7 @@ class KanBan(object):
                 print("\nYou are not doing anything now\n")
             else:
                 doing_list = []
-                print('\nThese Are The Tasks You Have Completed With Time Taken\n')
+                print('\nThese Are The Tasks You Still Doing With Time Taken\n')
                 for row in records:
                     stop = datetime.strptime(self.start, '%Y-%m-%d %H:%M')
                     start = datetime.strptime(str(row[3]), '%Y-%m-%d %H:%M')
@@ -144,7 +144,7 @@ class KanBan(object):
                 print("\nYou have not finished any task yet.\n")
             else:
                 all_list = []
-                print('\nThese Are The Tasks You Have Completed With Time Taken\n')
+                print('\nThese Are All The Tasks In All Sections\n')
                 for row in records:
                     tasks_duration = [row[0], row[1], row[2], row[3], row[4]]
                     all_list.append(tasks_duration)
