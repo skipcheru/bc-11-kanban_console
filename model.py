@@ -48,11 +48,22 @@ class KanBan(object):
 
     # moves a task from to do section to doing section
     def doing_task(self, task_id):
-        self.move_task(task_id, 'doing')
+        try:
+            if isinstance(int(task_id), int):
+                self.move_task(task_id, 'doing')
+
+        except ValueError:
+            print("\nCome on, Task id is a Number!\n")
+            
 
     # moves a task from doing section to done section
     def done_task(self, task_id):
-        self.move_task(task_id, 'done')
+        try:
+            if isinstance(int(task_id), int):
+                self.move_task(task_id, 'done')
+                
+        except ValueError:
+            print("\nCome on, Task id is a Number!\n")
 
     # Displays All the Tasks
     def list_all(self):
@@ -107,7 +118,7 @@ class KanBan(object):
             self.cursor.execute(query_section)
             records = self.cursor.fetchall()
             if not records:
-                print("\nYou have not finished any task yet.\n")
+                print("\nYou are not doing anything now\n")
             else:
                 done_list = []
                 print('\nThese Are The Tasks You Have Completed With Time Taken\n')
@@ -190,8 +201,9 @@ class KanBan(object):
 
                 # if the task is in to do section move it to doing section only
                 if task_current_section == 'todo':
+                    start_time = datetime.now().strftime("%Y-%m-%d %H:%M")
                     move_task = "UPDATE task SET status = ?, start_on = ? WHERE id = ?"
-                    self.cursor.execute(move_task, (self.section, self.start, self.task_id))
+                    self.cursor.execute(move_task, (self.section, start_time, self.task_id))
                     self.cursor.execute("SELECT * FROM task WHERE id = ?", (self.task_id,))
                     print("\nGreat! You have started doing the Following Task\n")
                     started_task = self.cursor.fetchall()
